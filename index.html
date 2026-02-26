@@ -219,8 +219,14 @@
 
       startConfetti();
 
-      fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec", {
+startConfetti();
+
+fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec", {
   method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "application/json"
+  },
   body: JSON.stringify({
     date: now.toLocaleDateString(),
     time: now.toLocaleTimeString(),
@@ -228,7 +234,6 @@
     code: code
   })
 });
-
     }, 2500);
   }
 
