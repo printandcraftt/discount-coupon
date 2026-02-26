@@ -219,6 +219,16 @@
 
       startConfetti();
 
+      fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec", {
+  method: "POST",
+  body: JSON.stringify({
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+    discount: randomDiscount,
+    code: code
+  })
+});
+
     }, 2500);
   }
 
