@@ -179,12 +179,11 @@
 
     setTimeout(() => {
 
-      const discounts = [
-        {value: "10% OFF", weight: 50},
-        {value: "5% OFF", weight: 43},
-        {value: "15% OFF", weight: 5},
-        {value: "20% OFF", weight: 2}
-      ];
+const discounts = [
+  {value: "10% OFF", weight: 87}, // most common
+  {value: "15% OFF", weight: 10}, // 10% chance
+  {value: "20% OFF", weight: 3}   // 3% chance (rare)
+];
 
       function getWeightedRandom() {
         let totalWeight = discounts.reduce((sum, item) => sum + item.weight, 0);
