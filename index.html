@@ -180,9 +180,12 @@
     setTimeout(() => {
 
 const discounts = [
-  {value: "10% OFF", weight: 96}, // most common
-  {value: "15% OFF", weight: 2}, // 10% chance
-  {value: "20% OFF", weight: 2}   // 3% chance (rare)
+  {value: "₱5 OFF", weight: 20},
+  {value: "₱10 OFF", weight: 80},
+  {value: "₱15 OFF", weight: 0},
+  {value: "₱20 OFF", weight: 0},
+  {value: "₱50 OFF", weight: 0},
+  {value: "₱100 OFF", weight: 0}
 ];
 
       function getWeightedRandom() {
@@ -201,10 +204,10 @@ const discounts = [
       let discountClass = "discount";
       let extraText = "";
 
-      if (randomDiscount === "20% OFF") {
-        discountClass += " legendary";
-        extraText = "<div class='small'>👑 Top 2% Winner!</div>";
-      }
+if (randomDiscount === "₱100 OFF") {
+  discountClass += " legendary";
+  extraText = "<div class='small'>🔥 JACKPOT WINNER!</div>";
+  }
 
       content.innerHTML = `
         <h1>🎉 Congratulations!</h1>
@@ -217,8 +220,6 @@ const discounts = [
       `;
 
       startConfetti();
-
-startConfetti();
 
 fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec", {
   method: "POST",
