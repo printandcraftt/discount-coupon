@@ -215,9 +215,20 @@ document.getElementById("countdown").innerText =
 
 if(lastPlayed === today){
 
+const savedDiscount = localStorage.getItem("rewardDiscount");
+const savedCode = localStorage.getItem("rewardCode");
+
 content.innerHTML = `
 <h2>💜 Already Claimed Today</h2>
+
+<div class="small">Your Reward</div>
+
+<div class="discount">${savedDiscount}</div>
+
+<div class="small">Code: ${savedCode}</div>
+
 <div id="countdown" class="small"></div>
+
 <button class="visit-btn" onclick="goToMain()">Visit Website</button>
 `;
 
@@ -260,10 +271,11 @@ random -= item.weight;
 }
 
 const randomDiscount = getWeightedRandom();
-
-const code =
-"CRAFT-"+Math.random().toString(36).substring(2,8).toUpperCase();
-
+const code = "CRAFT-"+Math.random().toString(36).substring(2,8).toUpperCase();
+  
+localStorage.setItem("rewardDiscount", randomDiscount);
+localStorage.setItem("rewardCode", code);
+  
 const dateTime = formatDateTime(now);
 
 content.innerHTML = `
