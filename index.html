@@ -1,25 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<title>Print & Craft - Surprise Discount</title>
+
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- PWA -->
+<title>Print & Craft - Surprise Discount</title>
+
+<!-- PWA Support -->
 <link rel="manifest" href="manifest.json">
 
-<!-- OneSignal Notifications -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(async function(OneSignal) {
-await OneSignal.init({
-appId: "YOUR-ONESIGNAL-ID"
-});
-});
-</script>
+<meta name="theme-color" content="#6a00ff">
 
 <style>
-*{box-sizing:border-box;}
+
+*{
+box-sizing:border-box;
+}
 
 body{
 margin:0;
@@ -44,6 +42,8 @@ position:relative;
 100%{background-position:0% 50%;}
 }
 
+/* Floating background shapes */
+
 .floating{
 position:absolute;
 border-radius:50%;
@@ -56,6 +56,8 @@ animation:float 20s linear infinite;
 100%{transform:translateY(-120vh);}
 }
 
+/* Brand title */
+
 .brand{
 position:absolute;
 top:20px;
@@ -63,6 +65,8 @@ font-size:20px;
 font-weight:bold;
 z-index:2;
 }
+
+/* Main reward card */
 
 .card{
 width:100%;
@@ -75,13 +79,10 @@ box-shadow:0 15px 40px rgba(0,0,0,0.3);
 z-index:2;
 }
 
-h1{font-size:18px;margin-bottom:10px;}
-
 .discount{
 font-size:36px;
 font-weight:bold;
 margin:15px 0;
-animation:pop 0.5s ease;
 }
 
 .legendary{
@@ -89,27 +90,10 @@ color:gold;
 text-shadow:0 0 15px gold;
 }
 
-.code{font-size:15px;margin-top:8px;}
-.small{font-size:12px;margin-top:8px;opacity:0.9;}
-
-@keyframes pop{
-0%{transform:scale(0.7);}
-100%{transform:scale(1);}
-}
-
-.spinner{
-width:50px;
-height:50px;
-border:5px solid rgba(255,255,255,0.3);
-border-top:5px solid white;
-border-radius:50%;
-animation:spin 1s linear infinite;
-margin:20px auto;
-}
-
-@keyframes spin{
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
+.small{
+font-size:12px;
+margin-top:8px;
+opacity:.9;
 }
 
 .visit-btn{
@@ -122,28 +106,37 @@ color:#6a00ff;
 font-weight:bold;
 font-size:14px;
 cursor:pointer;
-transition:all .3s ease;
+transition:0.3s;
 }
 
 .visit-btn:hover{
-transform:scale(1.08);
+transform:scale(1.05);
 background:gold;
 color:black;
 }
 
-#winnersList{
-list-style:none;
-padding:0;
-margin-top:10px;
+/* Floating winners popup */
+
+#winnerTicker{
+position:fixed;
+bottom:20px;
+left:20px;
+background:rgba(0,0,0,0.35);
+backdrop-filter:blur(10px);
+padding:10px 14px;
+border-radius:14px;
+font-size:12px;
+opacity:0;
+transition:0.4s;
+max-width:200px;
+z-index:3;
 }
 
-#winnersList li{
-background:rgba(255,255,255,0.15);
-margin:6px 0;
-padding:8px;
-border-radius:10px;
-font-size:12px;
+.showWinner{
+opacity:1;
 }
+
+/* Confetti canvas */
 
 canvas{
 position:fixed;
@@ -152,34 +145,41 @@ left:0;
 pointer-events:none;
 z-index:1;
 }
+
 </style>
+
 </head>
 
 <body>
 
+<!-- Floating shapes -->
 <div class="floating" style="width:60px;height:60px;left:10%;animation-duration:18s;"></div>
 <div class="floating" style="width:80px;height:80px;left:40%;animation-duration:22s;"></div>
 <div class="floating" style="width:70px;height:70px;left:75%;animation-duration:20s;"></div>
 
 <div class="brand">Print & Craft 💜</div>
+
 <canvas id="confetti"></canvas>
 
-<div class="card" id="content"></div>
-
-<div class="card">
-<h3>🎉 Recent Winners</h3>
-<ul id="winnersList"></ul>
+<div class="card" id="content">
 </div>
 
-<script>
+<div id="winnerTicker"></div>
 
-const now=new Date();
-const today=now.toDateString();
-const lastPlayed=localStorage.getItem("lastPlayedDate");
-const content=document.getElementById("content");
+<script>
+const now = new Date();
+const today = now.toDateString();
+const lastPlayed = localStorage.getItem("lastPlayedDate");
+const content = document.getElementById("content");
 
 function formatDateTime(date){
-return date.toLocaleString("en-US",{month:"long",day:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"});
+return date.toLocaleString("en-US",{
+month:"long",
+day:"numeric",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+});
 }
 
 function goToMain(){
@@ -190,28 +190,33 @@ function openMessenger(){
 window.open("https://m.me/YOURPAGE","_blank");
 }
 
+/* Countdown until tomorrow */
+
 function startCountdown(){
+
 setInterval(()=>{
-const now=new Date();
-const tomorrow=new Date();
+
+const now = new Date();
+const tomorrow = new Date();
 tomorrow.setHours(24,0,0,0);
-const diff=tomorrow-now;
 
-let h=Math.floor(diff/1000/60/60);
-let m=Math.floor(diff/1000/60%60);
-let s=Math.floor(diff/1000%60);
+const diff = tomorrow - now;
 
-const el=document.getElementById("countdown");
-if(el){
-el.innerText="Next reward in: "+h+"h "+m+"m "+s+"s";
-}
+let h = Math.floor(diff/1000/60/60);
+let m = Math.floor(diff/1000/60%60);
+let s = Math.floor(diff/1000%60);
+
+document.getElementById("countdown").innerText =
+"Next reward in: "+h+"h "+m+"m "+s+"s";
+
 },1000);
+
 }
 
-if(lastPlayed===today){
+if(lastPlayed === today){
 
-content.innerHTML=`
-<h1>💜 Already Claimed Today</h1>
+content.innerHTML = `
+<h2>💜 Already Claimed Today</h2>
 <div id="countdown" class="small"></div>
 <button class="visit-btn" onclick="goToMain()">Visit Website</button>
 `;
@@ -220,17 +225,16 @@ startCountdown();
 
 }else{
 
-localStorage.setItem("lastPlayedDate",today);
+localStorage.setItem("lastPlayedDate", today);
 
-content.innerHTML=`
-<h1>✨ Checking Your Luck...</h1>
-<div class="spinner"></div>
+content.innerHTML = `
+<h2>✨ Checking Your Luck...</h2>
 <div class="small">Preparing your reward...</div>
 `;
 
 setTimeout(()=>{
 
-const discounts=[
+const discounts = [
 {value:"₱5 OFF",weight:100},
 {value:"₱10 OFF",weight:0},
 {value:"₱15 OFF",weight:0},
@@ -240,106 +244,175 @@ const discounts=[
 ];
 
 function getWeightedRandom(){
-let totalWeight=discounts.reduce((sum,item)=>sum+item.weight,0);
-let random=Math.random()*totalWeight;
+
+let totalWeight = discounts.reduce((sum,item)=>sum+item.weight,0);
+
+let random = Math.random() * totalWeight;
+
 for(let item of discounts){
-if(random<item.weight)return item.value;
-random-=item.weight;
-}
+
+if(random < item.weight) return item.value;
+
+random -= item.weight;
+
 }
 
-const randomDiscount=getWeightedRandom();
-const code="CRAFT-"+Math.random().toString(36).substring(2,8).toUpperCase();
-const dateTime=formatDateTime(now);
+}
 
-content.innerHTML=`
-<h1>🎉 Congratulations!</h1>
+const randomDiscount = getWeightedRandom();
+
+const code =
+"CRAFT-"+Math.random().toString(36).substring(2,8).toUpperCase();
+
+const dateTime = formatDateTime(now);
+
+content.innerHTML = `
+<h2>🎉 Congratulations!</h2>
+
 <div class="discount">${randomDiscount}</div>
-<div class="code">Code: ${code}</div>
+
+<div class="small">Code: ${code}</div>
+
 <div class="small">Claimed on: ${dateTime}</div>
+
 <div id="expireTimer" class="small"></div>
+
 <button class="visit-btn" onclick="openMessenger()">Order via Messenger</button>
+
 <button class="visit-btn" onclick="goToMain()">Visit Website</button>
 `;
 
-startConfetti();
+/* Expiration timer */
 
-let expireTime=new Date().getTime()+86400000;
+let expireTime = new Date().getTime() + 86400000;
 
 setInterval(()=>{
-let now=new Date().getTime();
-let diff=expireTime-now;
 
-let h=Math.floor(diff/1000/60/60);
-let m=Math.floor(diff/1000/60%60);
-let s=Math.floor(diff/1000%60);
+let now = new Date().getTime();
+let diff = expireTime - now;
 
-const el=document.getElementById("expireTimer");
-if(el){
-el.innerText="Code expires in: "+h+"h "+m+"m "+s+"s";
-}
+let h = Math.floor(diff/1000/60/60);
+let m = Math.floor(diff/1000/60%60);
+let s = Math.floor(diff/1000%60);
+
+document.getElementById("expireTimer").innerText =
+"Code expires in: "+h+"h "+m+"m "+s+"s";
 
 },1000);
+
+/* Send to Google Sheets */
 
 fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec",{
 method:"POST",
 mode:"no-cors",
-headers:{"Content-Type":"application/json"},
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({
-date:now.toLocaleDateString(),
-time:now.toLocaleTimeString(),
-discount:randomDiscount,
-code:code
+date: now.toLocaleDateString(),
+time: now.toLocaleTimeString(),
+discount: randomDiscount,
+code: code
 })
 });
 
 },2500);
+
+}
+  /* Floating Winners Popup */
+
+const ticker = document.getElementById("winnerTicker");
+
+fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec")
+
+.then(res => res.json())
+
+.then(data => {
+
+let index = 0;
+
+function showWinner(){
+
+if(!data.length) return;
+
+let w = data[index];
+
+ticker.innerHTML = "🎉 Someone won " + w.discount;
+
+ticker.classList.add("showWinner");
+
+setTimeout(()=>{
+
+ticker.classList.remove("showWinner");
+
+},4000);
+
+index++;
+
+if(index >= data.length) index = 0;
+
 }
 
-// Load winners list
-fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec")
-.then(res=>res.json())
-.then(data=>{
-const list=document.getElementById("winnersList");
-data.slice(-5).reverse().forEach(item=>{
-let li=document.createElement("li");
-li.textContent=item.discount+" — "+item.code;
-list.appendChild(li);
-});
+showWinner();
+
+setInterval(showWinner,7000);
+
 });
 
-// Confetti
-const canvas=document.getElementById("confetti");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
 
-const pieces=[];
+/* Confetti Animation */
+
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const pieces = [];
+
 for(let i=0;i<60;i++){
+
 pieces.push({
+
 x:Math.random()*canvas.width,
-y:Math.random()*canvas.height-canvas.height,
+
+y:Math.random()*canvas.height - canvas.height,
+
 size:Math.random()*6+3,
+
 speed:Math.random()*2+1,
+
 color:`hsl(${Math.random()*360},70%,60%)`
+
 });
+
 }
 
 function startConfetti(){
+
 function update(){
+
 ctx.clearRect(0,0,canvas.width,canvas.height);
+
 for(let p of pieces){
-ctx.fillStyle=p.color;
+
+ctx.fillStyle = p.color;
+
 ctx.fillRect(p.x,p.y,p.size,p.size);
-p.y+=p.speed;
-if(p.y>canvas.height)p.y=-10;
+
+p.y += p.speed;
+
+if(p.y > canvas.height) p.y = -10;
+
 }
+
 requestAnimationFrame(update);
+
 }
+
 update();
+
 }
-
 </script>
-
 </body>
 </html>
