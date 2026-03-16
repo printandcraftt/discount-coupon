@@ -1,272 +1,344 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Print & Craft - Surprise Discount</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Print & Craft - Surprise Discount</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * { box-sizing: border-box; }
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(270deg, #6a00ff, #a64dff, #7b2cff);
-      background-size: 400% 400%;
-      animation: gradientMove 15s ease infinite;
-      overflow: hidden;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-    }
+<!-- OneSignal Notifications -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+await OneSignal.init({
+appId: "YOUR-ONESIGNAL-ID"
+});
+});
+</script>
 
-    @keyframes gradientMove {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
+<style>
+*{box-sizing:border-box;}
 
-    /* Floating background shapes */
-    .floating {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      animation: float 20s linear infinite;
-    }
+body{
+margin:0;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(270deg,#6a00ff,#a64dff,#7b2cff);
+background-size:400% 400%;
+animation:gradientMove 15s ease infinite;
+overflow:hidden;
+color:white;
+text-align:center;
+padding:20px;
+position:relative;
+}
 
-    @keyframes float {
-      0% { transform: translateY(100vh); }
-      100% { transform: translateY(-120vh); }
-    }
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
 
-    .brand {
-      position: absolute;
-      top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-      z-index: 2;
-    }
+.floating{
+position:absolute;
+border-radius:50%;
+background:rgba(255,255,255,0.15);
+animation:float 20s linear infinite;
+}
 
-    .card {
-      width: 100%;
-      max-width: 340px;
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(15px);
-      padding: 30px 20px;
-      border-radius: 20px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-      z-index: 2;
-    }
+@keyframes float{
+0%{transform:translateY(100vh);}
+100%{transform:translateY(-120vh);}
+}
 
-    h1 { font-size: 18px; margin-bottom: 10px; }
+.brand{
+position:absolute;
+top:20px;
+font-size:20px;
+font-weight:bold;
+z-index:2;
+}
 
-    .discount {
-      font-size: 36px;
-      font-weight: bold;
-      margin: 15px 0;
-      animation: pop 0.5s ease;
-    }
+.card{
+width:100%;
+max-width:340px;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(15px);
+padding:30px 20px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
+z-index:2;
+}
 
-    .legendary {
-      color: gold;
-      text-shadow: 0 0 15px gold;
-    }
+h1{font-size:18px;margin-bottom:10px;}
 
-    .code { font-size: 15px; margin-top: 8px; }
-    .small { font-size: 12px; margin-top: 8px; opacity: 0.9; }
+.discount{
+font-size:36px;
+font-weight:bold;
+margin:15px 0;
+animation:pop 0.5s ease;
+}
 
-    @keyframes pop {
-      0% {transform: scale(0.7);}
-      100% {transform: scale(1);}
-    }
+.legendary{
+color:gold;
+text-shadow:0 0 15px gold;
+}
 
-    /* Loading spinner */
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255,255,255,0.3);
-      border-top: 5px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
+.code{font-size:15px;margin-top:8px;}
+.small{font-size:12px;margin-top:8px;opacity:0.9;}
 
-    @keyframes spin {
-      0% {transform: rotate(0deg);}
-      100% {transform: rotate(360deg);}
-    }
+@keyframes pop{
+0%{transform:scale(0.7);}
+100%{transform:scale(1);}
+}
 
-    /* Visit Button */
-    .visit-btn {
-      margin-top: 15px;
-      padding: 12px 25px;
-      border-radius: 25px;
-      border: none;
-      background: white;
-      color: #6a00ff;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+.spinner{
+width:50px;
+height:50px;
+border:5px solid rgba(255,255,255,0.3);
+border-top:5px solid white;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:20px auto;
+}
 
-    .visit-btn:hover {
-      transform: scale(1.08);
-      background: gold;
-      color: black;
-    }
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
-  </style>
+.visit-btn{
+margin-top:10px;
+padding:12px 25px;
+border-radius:25px;
+border:none;
+background:white;
+color:#6a00ff;
+font-weight:bold;
+font-size:14px;
+cursor:pointer;
+transition:all .3s ease;
+}
+
+.visit-btn:hover{
+transform:scale(1.08);
+background:gold;
+color:black;
+}
+
+#winnersList{
+list-style:none;
+padding:0;
+margin-top:10px;
+}
+
+#winnersList li{
+background:rgba(255,255,255,0.15);
+margin:6px 0;
+padding:8px;
+border-radius:10px;
+font-size:12px;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none;
+z-index:1;
+}
+</style>
 </head>
 
 <body>
 
-<!-- Floating shapes -->
 <div class="floating" style="width:60px;height:60px;left:10%;animation-duration:18s;"></div>
 <div class="floating" style="width:80px;height:80px;left:40%;animation-duration:22s;"></div>
 <div class="floating" style="width:70px;height:70px;left:75%;animation-duration:20s;"></div>
 
 <div class="brand">Print & Craft 💜</div>
 <canvas id="confetti"></canvas>
+
 <div class="card" id="content"></div>
 
+<div class="card">
+<h3>🎉 Recent Winners</h3>
+<ul id="winnersList"></ul>
+</div>
+
 <script>
-  const now = new Date();
-  const today = now.toDateString();
-  const lastPlayed = localStorage.getItem("lastPlayedDate");
-  const content = document.getElementById("content");
 
-  function formatDateTime(date) {
-    return date.toLocaleString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  }
+const now=new Date();
+const today=now.toDateString();
+const lastPlayed=localStorage.getItem("lastPlayedDate");
+const content=document.getElementById("content");
 
-  function goToMain() {
-    window.open("https://printandcraftt.github.io/Print_and_Craft_New/", "_blank");
-  }
+function formatDateTime(date){
+return date.toLocaleString("en-US",{month:"long",day:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"});
+}
 
-  if (lastPlayed === today) {
-    content.innerHTML = `
-      <h1>💜 Already Claimed Today</h1>
-      <p class="small">Come back tomorrow for another chance ✨</p>
-      <button class="visit-btn" onclick="goToMain()">Visit Our Website</button>
-    `;
-  } else {
+function goToMain(){
+window.open("https://printandcraftt.github.io/Print_and_Craft_New/","_blank");
+}
 
-    localStorage.setItem("lastPlayedDate", today);
+function openMessenger(){
+window.open("https://m.me/YOURPAGE","_blank");
+}
 
-    content.innerHTML = `
-      <h1>✨ Checking Your Luck...</h1>
-      <div class="spinner"></div>
-      <div class="small">Preparing your reward...</div>
-    `;
+function startCountdown(){
+setInterval(()=>{
+const now=new Date();
+const tomorrow=new Date();
+tomorrow.setHours(24,0,0,0);
+const diff=tomorrow-now;
 
-    setTimeout(() => {
+let h=Math.floor(diff/1000/60/60);
+let m=Math.floor(diff/1000/60%60);
+let s=Math.floor(diff/1000%60);
 
-const discounts = [
-  {value: "₱5 OFF", weight: 100},
-  {value: "₱10 OFF", weight: 0},
-  {value: "₱15 OFF", weight: 0},
-  {value: "₱20 OFF", weight: 0},
-  {value: "₱50 OFF", weight: 0},
-  {value: "₱100 OFF", weight: 0}
+const el=document.getElementById("countdown");
+if(el){
+el.innerText="Next reward in: "+h+"h "+m+"m "+s+"s";
+}
+},1000);
+}
+
+if(lastPlayed===today){
+
+content.innerHTML=`
+<h1>💜 Already Claimed Today</h1>
+<div id="countdown" class="small"></div>
+<button class="visit-btn" onclick="goToMain()">Visit Website</button>
+`;
+
+startCountdown();
+
+}else{
+
+localStorage.setItem("lastPlayedDate",today);
+
+content.innerHTML=`
+<h1>✨ Checking Your Luck...</h1>
+<div class="spinner"></div>
+<div class="small">Preparing your reward...</div>
+`;
+
+setTimeout(()=>{
+
+const discounts=[
+{value:"₱5 OFF",weight:100},
+{value:"₱10 OFF",weight:0},
+{value:"₱15 OFF",weight:0},
+{value:"₱20 OFF",weight:0},
+{value:"₱50 OFF",weight:0},
+{value:"₱100 OFF",weight:0}
 ];
 
-      function getWeightedRandom() {
-        let totalWeight = discounts.reduce((sum, item) => sum + item.weight, 0);
-        let random = Math.random() * totalWeight;
-        for (let item of discounts) {
-          if (random < item.weight) return item.value;
-          random -= item.weight;
-        }
-      }
+function getWeightedRandom(){
+let totalWeight=discounts.reduce((sum,item)=>sum+item.weight,0);
+let random=Math.random()*totalWeight;
+for(let item of discounts){
+if(random<item.weight)return item.value;
+random-=item.weight;
+}
+}
 
-      const randomDiscount = getWeightedRandom();
-      const code = "CRAFT-" + Math.random().toString(36).substring(2,8).toUpperCase();
-      const dateTime = formatDateTime(now);
+const randomDiscount=getWeightedRandom();
+const code="CRAFT-"+Math.random().toString(36).substring(2,8).toUpperCase();
+const dateTime=formatDateTime(now);
 
-      let discountClass = "discount";
-      let extraText = "";
+content.innerHTML=`
+<h1>🎉 Congratulations!</h1>
+<div class="discount">${randomDiscount}</div>
+<div class="code">Code: ${code}</div>
+<div class="small">Claimed on: ${dateTime}</div>
+<div id="expireTimer" class="small"></div>
+<button class="visit-btn" onclick="openMessenger()">Order via Messenger</button>
+<button class="visit-btn" onclick="goToMain()">Visit Website</button>
+`;
 
-if (randomDiscount === "₱100 OFF") {
-  discountClass += " legendary";
-  extraText = "<div class='small'>🔥 JACKPOT WINNER!</div>";
-  }
+startConfetti();
 
-      content.innerHTML = `
-        <h1>🎉 Congratulations!</h1>
-        <div class="${discountClass}">${randomDiscount}</div>
-        ${extraText}
-        <div class="code">Code: ${code}</div>
-        <div class="small">Claimed on: ${dateTime}</div>
-        <div class="small">Screenshot & send to An Drea💜</div>
-        <button class="visit-btn" onclick="goToMain()">Visit Our Website</button>
-      `;
+let expireTime=new Date().getTime()+86400000;
 
-      startConfetti();
+setInterval(()=>{
+let now=new Date().getTime();
+let diff=expireTime-now;
 
-fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec", {
-  method: "POST",
-  mode: "no-cors",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    date: now.toLocaleDateString(),
-    time: now.toLocaleTimeString(),
-    discount: randomDiscount,
-    code: code
-  })
+let h=Math.floor(diff/1000/60/60);
+let m=Math.floor(diff/1000/60%60);
+let s=Math.floor(diff/1000%60);
+
+const el=document.getElementById("expireTimer");
+if(el){
+el.innerText="Code expires in: "+h+"h "+m+"m "+s+"s";
+}
+
+},1000);
+
+fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec",{
+method:"POST",
+mode:"no-cors",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+date:now.toLocaleDateString(),
+time:now.toLocaleTimeString(),
+discount:randomDiscount,
+code:code
+})
 });
-    }, 2500);
-  }
 
-  // Confetti
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+},2500);
+}
 
-  const pieces = [];
-  for (let i = 0; i < 60; i++) {
-    pieces.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height - canvas.height,
-      size: Math.random() * 6 + 3,
-      speed: Math.random() * 2 + 1,
-      color: `hsl(${Math.random() * 360}, 70%, 60%)`
-    });
-  }
+// Load winners list
+fetch("https://script.google.com/macros/s/AKfycbzOfS4_Hfd1ngTKnDo24jfeKKGq1mONAQpMUFvE-bw2BNlFWldOzC7fOhIzC-0d2sFg/exec")
+.then(res=>res.json())
+.then(data=>{
+const list=document.getElementById("winnersList");
+data.slice(-5).reverse().forEach(item=>{
+let li=document.createElement("li");
+li.textContent=item.discount+" — "+item.code;
+list.appendChild(li);
+});
+});
 
-  function startConfetti() {
-    function update() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let p of pieces) {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-        p.y += p.speed;
-        if (p.y > canvas.height) p.y = -10;
-      }
-      requestAnimationFrame(update);
-    }
-    update();
-  }
+// Confetti
+const canvas=document.getElementById("confetti");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const pieces=[];
+for(let i=0;i<60;i++){
+pieces.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height-canvas.height,
+size:Math.random()*6+3,
+speed:Math.random()*2+1,
+color:`hsl(${Math.random()*360},70%,60%)`
+});
+}
+
+function startConfetti(){
+function update(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+for(let p of pieces){
+ctx.fillStyle=p.color;
+ctx.fillRect(p.x,p.y,p.size,p.size);
+p.y+=p.speed;
+if(p.y>canvas.height)p.y=-10;
+}
+requestAnimationFrame(update);
+}
+update();
+}
+
 </script>
 
 </body>
